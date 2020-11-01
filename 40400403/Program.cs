@@ -11,16 +11,33 @@ namespace _40400403
     {
         static void Main(string[] args)
         {
-            //read in caves
+            // Read file from the command prompt
             string fileName = args[0];
-            string filePath = "testfiles/generated30-1/";
+            //string fileName = "generated30-1";
+            string file = ReadFile(fileName);
 
-            string file = System.IO.File.ReadAllText(filePath + fileName + ".cav");
+            // Store file as a string array
+            string[] inputString = file.Split(',');
+            // Parse the string array into int array
+            int[] input = Array.ConvertAll(inputString, int.Parse);
 
-            Console.WriteLine(file);
+            int size = input[0];
+            Console.WriteLine(size);
+        }
 
-            //TextWriter output = new StreamWriter("testfiles/" + fileName + ".csv");
-            //output.WriteLine(file);
+        private static string ReadFile(string name)
+        {
+            string file = null;
+            try
+            {
+                string filePath = "testfiles/generated30-1/";
+                file = File.ReadAllText(filePath + name + ".cav");                
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("File is not found!");
+            }
+            return file;
         }
     }
 }
