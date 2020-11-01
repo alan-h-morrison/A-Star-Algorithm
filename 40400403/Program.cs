@@ -13,17 +13,21 @@ namespace _40400403
         static void Main(string[] args)
         {
             // Read file from the command prompt
-            string fileName = args[0];
+            //string fileName = args[0];
+            string fileName = "generated30-1";
 
             // Parse the string array into int array
             int[] input = ReadFile(fileName);
 
-            int size = input[0] * 2;
+            Console.WriteLine("No. of elements in file: " + input.Length + "\n");
+ 
             int nodeID = 1;
+            int totalCoord = input[0] * 2;
+            
             ArrayList nodeList = new ArrayList();
 
             int idx = 1;
-            while(idx < size)
+            while(idx < totalCoord)
             {
                 int xCoordinate = input[idx];
                 int yCoordinate = input[idx + 1];
@@ -35,12 +39,40 @@ namespace _40400403
                 idx = idx + 2;
             }
 
-            foreach(Node item in nodeList)
+            int matrixSize = (input[0] * input[0]) /2;
+            int start = (totalCoord + 2);
+            int end = matrixSize + start;
+
+            /*
+            Graph g = new Graph(matrixSize);
+            Console.WriteLine("\nArray starts at: " + start);
+            Console.WriteLine("Array ends at: " + end + "\n");
+
+            int row = 1;
+            while (start <= end)
+            {
+                if (input[start] == 0 || input[start + 1] == 0)
+                {
+                    g.removeEdge(input[start] , row);
+                }
+
+                if (input[start] == 1 || input[start + 1] == 1)
+                {
+                    g.addEdge(input[start], row);
+                }
+
+                start = start + 2;
+            }
+
+            Console.WriteLine("row: " + row);
+            foreach (Node item in nodeList)
             {
                 Console.WriteLine(item.toString());
             }
 
+
             Console.WriteLine("\nNumber of nodes: " + nodeList.Count);
+            */
         }
 
         private static int[] ReadFile(string name)
@@ -65,6 +97,17 @@ namespace _40400403
                 Environment.Exit(1);
             }
             return input;
+
         }
     }
 }
+
+
+            /*
+            int index = 1;
+            foreach(int item in input)
+            {
+                Console.WriteLine(index + "    |    " + item);
+                index++;
+            }
+            */

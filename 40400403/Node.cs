@@ -6,9 +6,9 @@ namespace _40400403
 {
     class Node
     {
-        private int id;
-        private int x;
-        private int y;
+        public int id { get; set; }
+        public int x { get; set; }
+        public int y { get; set; }
         
         private Node lastNode;
         private int totalCost;
@@ -20,6 +20,7 @@ namespace _40400403
             y = yCoordinate;
             
         }
+
 
         public double Distance(Node nextCave)
         {
