@@ -6,22 +6,29 @@ namespace _40400403
 {
     class Node
     {
+        private int id;
         private int x;
         private int y;
-        private int id;
+        
         private Node lastNode;
         private int totalCost;
 
-        public Node(int xCoordinate, int yCoordinate, int nodeID)
+        public Node(int nodeID, int xCoordinate, int yCoordinate)
         {
+            id = nodeID;
             x = xCoordinate;
             y = yCoordinate;
-            id = nodeID;
+            
         }
 
         public double Distance(Node nextCave)
         {
             return 0;
+        }
+
+        public string toString()
+        {
+            return "id: " + id.ToString() + "\t | (" + x.ToString() + "," + y.ToString() + ")";
         }
     }
 }
