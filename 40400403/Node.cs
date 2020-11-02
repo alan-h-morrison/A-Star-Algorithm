@@ -21,7 +21,6 @@ namespace _40400403
             
         }
 
-
         public double Distance(Node nextCave)
         {
             return 0;
