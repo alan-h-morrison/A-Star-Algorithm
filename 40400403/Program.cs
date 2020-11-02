@@ -13,66 +13,31 @@ namespace _40400403
         static void Main(string[] args)
         {
             // Read file from the command prompt
-            //string fileName = args[0];
-            string fileName = "generated30-1";
+            string fileName = args[0];
 
             // Parse the string array into int array
             int[] input = ReadFile(fileName);
 
+            // counts the number of elements in an int array
             Console.WriteLine("No. of elements in file: " + input.Length + "\n");
- 
-            int nodeID = 1;
+
+            // total x and y coordianates in the file
             int totalCoord = input[0] * 2;
+
+            ArrayList nodeList = initNodeList(input, totalCoord);
+
+            int size = (input[0] * input[0]) / 2;
+            int start = totalCoord + 1;
+            int end = input.Length;
+
+            Matrix matrixList = initMatrix(input, size, start, end);
             
-            ArrayList nodeList = new ArrayList();
-
-            int idx = 1;
-            while(idx < totalCoord)
-            {
-                int xCoordinate = input[idx];
-                int yCoordinate = input[idx + 1];
-
-                Node node = new Node(nodeID, xCoordinate, yCoordinate);
-                nodeList.Add(node);
-
-                nodeID++;
-                idx = idx + 2;
-            }
-
-            int matrixSize = (input[0] * input[0]) /2;
-            int start = (totalCoord + 2);
-            int end = matrixSize + start;
-
-            /*
-            Graph g = new Graph(matrixSize);
-            Console.WriteLine("\nArray starts at: " + start);
-            Console.WriteLine("Array ends at: " + end + "\n");
-
-            int row = 1;
-            while (start <= end)
-            {
-                if (input[start] == 0 || input[start + 1] == 0)
-                {
-                    g.removeEdge(input[start] , row);
-                }
-
-                if (input[start] == 1 || input[start + 1] == 1)
-                {
-                    g.addEdge(input[start], row);
-                }
-
-                start = start + 2;
-            }
-
-            Console.WriteLine("row: " + row);
+            // displays the nodes
             foreach (Node item in nodeList)
             {
                 Console.WriteLine(item.toString());
             }
-
-
             Console.WriteLine("\nNumber of nodes: " + nodeList.Count);
-            */
         }
 
         private static int[] ReadFile(string name)
@@ -84,7 +49,6 @@ namespace _40400403
             try
             {
                 file = File.ReadAllText(name + ".cav");
-
                 // Store file as a string array
                 inputString = file.Split(',');
 
@@ -99,15 +63,69 @@ namespace _40400403
             return input;
 
         }
+
+        public static ArrayList initNodeList(int[] input, int totalCoord)
+        {
+            // Used to store nodes created
+            ArrayList nodeList = new ArrayList();
+
+            // intialise the id of the first node
+            int nodeID = 1;
+
+            // iterates through all x and y coordinates and creates a node for each pair
+            int idx = 1;
+            while (idx < totalCoord)
+            {
+                int xCoordinate = input[idx];
+                int yCoordinate = input[idx + 1];
+                Node node = new Node(nodeID, xCoordinate, yCoordinate);
+                nodeList.Add(node);
+
+                nodeID++;
+                idx = idx + 2;
+            }
+
+            return nodeList;
+        }
+        
+        public static Matrix initMatrix(int[] input, int size, int start, int end)
+        {
+            int num = 1;
+            int column = 0;
+            int row = 0;
+
+            Matrix g = new Matrix(size);
+            Console.WriteLine("\nArray starts at: " + start);
+            Console.WriteLine("Array ends at: " + end + "\n");
+
+
+            while (start < end)
+            {
+                if (input[start] == 0)
+                {
+                    Console.Write(num + " |   ");
+                    g.removeEdge(row, column);
+
+                    num++;
+                }
+
+                if (input[start] == 1)
+                {
+                    Console.Write(num + "   |   ");
+                    g.addEdge(row, column);
+
+                    num++;
+                }
+
+                if (row == size)
+                {
+                    row = 0;
+                    column++;
+                }
+
+                start++;
+            }
+            return g;
+        }
     }
 }
-
-
-            /*
-            int index = 1;
-            foreach(int item in input)
-            {
-                Console.WriteLine(index + "    |    " + item);
-                index++;
-            }
-            */
