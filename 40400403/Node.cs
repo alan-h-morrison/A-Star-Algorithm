@@ -10,9 +10,6 @@ namespace _40400403
         public int x { get; set; }
         public int y { get; set; }
         
-        private Node lastNode;
-        private int totalCost;
-
         public Node(int nodeID, int xCoordinate, int yCoordinate)
         {
             id = nodeID;
@@ -23,7 +20,7 @@ namespace _40400403
 
         public double Distance(Node nextCave)
         {
-            return 0;
+            return Math.Sqrt((this.x - nextCave.x)-(this.y - nextCave.y));
         }
 
         public string toString()

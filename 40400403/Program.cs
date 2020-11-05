@@ -14,30 +14,53 @@ namespace _40400403
         {
             // Read file from the command prompt
             string fileName = args[0];
+           // string fileName = "generated30-1";
 
             // Parse the string array into int array
             int[] input = ReadFile(fileName);
 
-            // counts the number of elements in an int array
-            Console.WriteLine("No. of elements in file: " + input.Length + "\n");
-
             // total x and y coordianates in the file
+            int totalNodes = input[0];
             int totalCoord = input[0] * 2;
-
-            ArrayList nodeList = initNodeList(input, totalCoord);
-
-            int size = (input[0] * input[0]) / 2;
             int start = totalCoord + 1;
             int end = input.Length;
 
-            Matrix matrixList = initMatrix(input, size, start, end);
-            
+            Matrix connect = new Matrix(totalNodes);
+
+            connect.LoadMatrix(connect,input, start, end, totalNodes);
+
+            ArrayList nodeList = initNodeList(input, totalCoord);
+
+
+
             // displays the nodes
             foreach (Node item in nodeList)
             {
                 Console.WriteLine(item.toString());
             }
             Console.WriteLine("\nNumber of nodes: " + nodeList.Count);
+
+            Console.WriteLine();
+
+
+            int counter = 1;
+            for (int i = 0; i < totalNodes; i++)
+            {
+                for (int j = 0; j < totalNodes; j++)
+                {
+                    Console.WriteLine(counter + "   |   " + "(" + i + ", " + j + ")" + "   |   " + connect.getEdge(i, j));
+                    counter++;
+                }
+                Console.WriteLine();
+            }
+
+            Console.WriteLine();
+
+            // counts the number of elements in an int array
+            Console.WriteLine("No. of elements in file: " + input.Length);
+            Console.WriteLine("Array starts at: " + start);
+            Console.WriteLine("Array ends at: " + end + "\n");
+            
         }
 
         private static int[] ReadFile(string name)
@@ -61,7 +84,6 @@ namespace _40400403
                 Environment.Exit(1);
             }
             return input;
-
         }
 
         public static ArrayList initNodeList(int[] input, int totalCoord)
@@ -86,46 +108,6 @@ namespace _40400403
             }
 
             return nodeList;
-        }
-        
-        public static Matrix initMatrix(int[] input, int size, int start, int end)
-        {
-            int num = 1;
-            int column = 0;
-            int row = 0;
-
-            Matrix g = new Matrix(size);
-            Console.WriteLine("\nArray starts at: " + start);
-            Console.WriteLine("Array ends at: " + end + "\n");
-
-
-            while (start < end)
-            {
-                if (input[start] == 0)
-                {
-                    Console.Write(num + " |   ");
-                    g.removeEdge(row, column);
-
-                    num++;
-                }
-
-                if (input[start] == 1)
-                {
-                    Console.Write(num + "   |   ");
-                    g.addEdge(row, column);
-
-                    num++;
-                }
-
-                if (row == size)
-                {
-                    row = 0;
-                    column++;
-                }
-
-                start++;
-            }
-            return g;
         }
     }
 }

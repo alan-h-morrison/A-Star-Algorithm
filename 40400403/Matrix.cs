@@ -6,36 +6,72 @@ namespace _40400403
 {
     public class Matrix
     {
-        bool[,] matrix;
-        private int numEdges;
+        Boolean[][] matrix;
+        private int arraySize;
 
-        public Matrix(int numEdges)
+
+        public Matrix(int size)
         {
-            this.numEdges = numEdges;
-            matrix = new bool[numEdges, numEdges];
+            this.arraySize = size;
+            matrix = new Boolean[size][];
+
+            for (int rows = 0; rows < size; rows++)
+            {
+                matrix[rows] = new Boolean[size];
+            }
+        }
+
+        public Matrix LoadMatrix(Matrix empty, int[] input, int start, int end, int totalNodes)
+        {
+            int column = 0;
+            int row = 0;
+
+            while (start <= end)
+            {
+                if(start == end)
+                {
+                    break;
+                }
+                if (row == totalNodes)
+                {                    
+                    row = 0;
+                    column++;
+                }
+
+                if (input[start] != 0)
+                {
+                }
+                else
+                {
+                    empty.removeEdge(column, row);
+                }
+
+                if (input[start] == 1)
+                {
+                    empty.addEdge(column, row);                 
+                }
+
+                row++;
+                start++;
+            }
+            return empty;
         }
 
         // Add edges
         public void addEdge(int i, int j)
         {
-            matrix[i, j] = true;
-            // matrix[j, i] = true;
-
-            Console.WriteLine(matrix[i, j]);
+            this.matrix[i][j] = true;
         }
 
         // Remove edges
         public void removeEdge(int i, int j)
         {
-            matrix[i, j] = false;
-            // matrix[j, i] = false;
-
-            Console.WriteLine(matrix[i, j]);
+            this.matrix[i][j] = false;
         }
 
         public bool getEdge(int i, int j)
         {
-            return matrix[i, j];
+            return matrix[i][j];
         }
     }
 }
