@@ -40,15 +40,12 @@ namespace _40400403
 
                 if (input[start] != 0)
                 {
-                }
-                else
-                {
-                    empty.removeEdge(column, row);
+                    empty.removeEdge(row, column);
                 }
 
                 if (input[start] == 1)
                 {
-                    empty.addEdge(column, row);                 
+                    empty.addEdge(row, column);                 
                 }
 
                 row++;
@@ -73,6 +70,7 @@ namespace _40400403
         {
             return matrix[i][j];
         }
+        
     }
 }
 
