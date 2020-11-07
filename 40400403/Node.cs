@@ -9,7 +9,7 @@ namespace _40400403
     {
         public int id { get; set; }
         public Node parent { get; set; }
-        public bool visited { get; set; }
+        public double distanceParent {get; set;}
       
         // Distance from start + heuristic distance (g + h)
         public double gScore { get; set; }

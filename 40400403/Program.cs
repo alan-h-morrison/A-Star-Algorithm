@@ -98,13 +98,26 @@ namespace _40400403
             Node startNode = (Node)nodeList[0];
             Node goalNode = (Node)nodeList[totalNodes - 1];
             Node currentNode = startNode;
+            Node parent = null;
 
             int nodeNum = 0;
             openList.Add(startNode);
 
             while (!(openList == null))
             {
-                //TODO exit condition
+                if(openList.Count == 0)
+                {
+                    Console.WriteLine("fail");
+                    return null;
+                }
+                // sort open list by fscore
+                openList.Sort(new myComparer());
+
+                // set the node with the lowest fscore to the current node being exaimined
+                currentNode = (Node)openList[0];
+                nodeNum = currentNode.id - 1;
+
+                // when the current node id is equal to the id of the goal node, exit
                 if (currentNode.id == goalNode.id)
                 {
                     Console.WriteLine("IT WORKS ");
@@ -114,31 +127,31 @@ namespace _40400403
                 // Detect connections new  nodes, add to open list
                 for (int i = 0; i < totalNodes; i++)
                 {
-                    if (currentNode == nodeList[i])
-                    {
-                        openList.Remove(currentNode);
-                        closeList.Add(currentNode);
-                    }
-                    else if (connection.getEdge(nodeNum, i))
+                    if (connection.getEdge(nodeNum, i))
                     {
                         Node expandNode = (Node)nodeList[i];
 
                         expandNode.parent = currentNode;
-                        expandNode.gScore = expandNode.Distance(startNode);
-                        expandNode.hScore = expandNode.Distance(goalNode);
 
-                        openList.Add(expandNode);
+                        if(!(openList.Contains(expandNode) || closeList.Contains(expandNode)))
+                        {
+                            openList.Add(expandNode);
+                        }
                     }
                 }
+                
+                openList.Remove(currentNode);
+                closeList.Add(currentNode);
 
-                openList.Sort(new myComparer());
+                foreach(Node node in openList)
+                {
+                        parent = node.parent;
 
-                // Sort list by f value
-                // Set expanded node to current node
-
-                currentNode = (Node)openList[0];
-                nodeNum++;
-
+                        node.distanceParent = node.Distance(parent);
+                        node.gScore = node.gScore + node.distanceParent;
+                        // Distance from node to goal node
+                        node.hScore = node.Distance(goalNode);
+                }
             }
 
             return openList;
