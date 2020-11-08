@@ -15,7 +15,6 @@ namespace _40400403
         {
             // Read file from the command prompt
             string fileName = args[0];
-            // string fileName = "generated30-1";
 
             // Parse the string array into int array
             int[] input = ReadFile(fileName);
@@ -27,45 +26,47 @@ namespace _40400403
             int end = input.Length;
 
             Matrix connect = new Matrix(totalNodes);
-
             connect.LoadMatrix(connect, input, start, end, totalNodes);
 
             ArrayList nodeList = initNodeList(input, totalCoord);
 
             Node answer = AStarAlgorithm(nodeList, connect, totalNodes);
-            
+            ArrayList answerPath = CalculatePath(answer);
 
-            ArrayList answerPath = new ArrayList();
-
-            answerPath.Add(answer);
-            while(!(answer.parent == null))
-            {
-                answerPath.Add(answer.parent);
-                answer = answer.parent;
-            }
-
-            answerPath.Reverse();
-
-            Console.Write("\nPath: ");
-            foreach(Node item in answerPath)
-            {
-                Console.Write(item.id + " ");
-            }
-            Console.WriteLine("\n");
-/*
-            int[] path = null;
-            foreach(Node node in answer)
-            {
-                var cave = node.parent; 
-                Console.WriteLine(cave.id);
-            }
-            */
-
-    
-            //Node lastNode = (Node)answer[answer.Count - 1];
-            //Console.WriteLine("Length: " + lastNode.gScore);
+            WriteFile(answerPath, fileName);
         }
 
+        private static ArrayList CalculatePath(Node answer)
+        {
+            ArrayList pathList = new ArrayList();
+
+            pathList.Add(answer);
+            while(!(answer.parent == null))
+            {
+                pathList.Add(answer.parent);
+                answer = answer.parent;
+            }
+            pathList.Reverse();
+
+            return pathList;
+        }
+
+        private static void WriteFile(ArrayList pathList, string name)
+        {
+            if((File.Exists(name + ".csn")))
+            {
+                File.Delete(name + ".csn");
+            }
+                Console.Write("\nPath: ");
+                foreach(Node item in pathList)
+                {
+                    Console.Write(item.id);
+                    Console.Write(" ");
+                    // write file path to a .csn file with the name of the arguments input
+                    File.AppendAllText(name + ".csn", item.id + " ");
+                }
+                Console.WriteLine("\n");
+        }
         private static int[] ReadFile(string name)
         {
             string file = null;
