@@ -32,39 +32,36 @@ namespace _40400403
 
             ArrayList nodeList = initNodeList(input, totalCoord);
 
+            Node answer = AStarAlgorithm(nodeList, connect, totalNodes);
+            
 
-            ArrayList answer = AStarAlgorithm(nodeList, connect, totalNodes);
+            ArrayList answerPath = new ArrayList();
 
+            answerPath.Add(answer);
+            while(!(answer.parent == null))
+            {
+                answerPath.Add(answer.parent);
+                answer = answer.parent;
+            }
 
-            /*
-                        // displays the nodes
-                        foreach (Node item in nodeList)
-                        {
-                            Console.WriteLine(item.toString());
-                        }
-                        Console.WriteLine("\nNumber of nodes: " + nodeList.Count);
+            answerPath.Reverse();
 
-                        Console.WriteLine();
+            foreach(Node item in answerPath)
+            {
+                Console.WriteLine(item.id);
+            }
+/*
+            int[] path = null;
+            foreach(Node node in answer)
+            {
+                var cave = node.parent; 
+                Console.WriteLine(cave.id);
+            }
+            */
 
-
-                        int counter = 1;
-                        for (int i = 0; i < totalNodes; i++)
-                        {
-                            for (int j = 0; j < totalNodes; j++)
-                            {
-                                Console.WriteLine(counter + "   |   " + "(" + i + ", " + j + ")" + "   |   " + connect.getEdge(i, j));
-                                counter++;
-                            }
-                            Console.WriteLine();
-                        }
-
-                        Console.WriteLine();
-
-                        // counts the number of elements in an int array
-                        Console.WriteLine("No. of elements in file: " + input.Length);
-                        Console.WriteLine("Array starts at: " + start);
-                        Console.WriteLine("Array ends at: " + end + "\n");
-                        */
+    
+            //Node lastNode = (Node)answer[answer.Count - 1];
+            //Console.WriteLine("Length: " + lastNode.gScore);
         }
 
         private static int[] ReadFile(string name)
@@ -90,7 +87,7 @@ namespace _40400403
             return input;
         }
 
-        public static ArrayList AStarAlgorithm(ArrayList nodeList, Matrix connection, int totalNodes)
+        public static Node AStarAlgorithm(ArrayList nodeList, Matrix connection, int totalNodes)
         {
             ArrayList openList = new ArrayList();
             ArrayList closeList = new ArrayList();
@@ -120,8 +117,9 @@ namespace _40400403
                 // when the current node id is equal to the id of the goal node, exit
                 if (currentNode.id == goalNode.id)
                 {
-                    Console.WriteLine("IT WORKS ");
-                    return openList;
+                    //closeList.Add(currentNode);
+                    Console.WriteLine("\nIT WORKS ");
+                    return (Node)openList[0];
                 }
 
                 // Detect connections new  nodes, add to open list
@@ -130,11 +128,12 @@ namespace _40400403
                     if (connection.getEdge(nodeNum, i))
                     {
                         Node expandNode = (Node)nodeList[i];
-
-                        expandNode.parent = currentNode;
+                        
+                        
 
                         if(!(openList.Contains(expandNode) || closeList.Contains(expandNode)))
                         {
+                            expandNode.parent = currentNode;
                             openList.Add(expandNode);
                         }
                     }
@@ -154,8 +153,7 @@ namespace _40400403
                 }
             }
 
-            return openList;
-            // compare to method = f cost of cave 1 to another cave
+            return null;
         }
 
         public class myComparer : IComparer
