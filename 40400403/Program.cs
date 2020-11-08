@@ -46,10 +46,12 @@ namespace _40400403
 
             answerPath.Reverse();
 
+            Console.Write("\nPath: ");
             foreach(Node item in answerPath)
             {
-                Console.WriteLine(item.id);
+                Console.Write(item.id + " ");
             }
+            Console.WriteLine("\n");
 /*
             int[] path = null;
             foreach(Node node in answer)
@@ -118,7 +120,6 @@ namespace _40400403
                 if (currentNode.id == goalNode.id)
                 {
                     //closeList.Add(currentNode);
-                    Console.WriteLine("\nIT WORKS ");
                     return (Node)openList[0];
                 }
 

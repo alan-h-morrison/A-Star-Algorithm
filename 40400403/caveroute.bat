@@ -8,13 +8,9 @@ rem myprogram.exe %1
 rem or
 rem java -jar myprogram.jar %1
 
-
+dotnet run %1
 
 set ENDTIME=%TIME%
-
-  
-
-
     rem Change formatting for the start and end times
     for /F "tokens=1-4 delims=:.," %%a in ("%STARTTIME%") do (
        set /A "start=(((%%a*60)+1%%b %% 100)*60+1%%c %% 100)*100+1%%d %% 100"
