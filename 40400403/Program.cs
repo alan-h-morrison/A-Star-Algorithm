@@ -36,37 +36,6 @@ namespace _40400403
             WriteFile(answerPath, fileName);
         }
 
-        private static ArrayList CalculatePath(Node answer)
-        {
-            ArrayList pathList = new ArrayList();
-
-            pathList.Add(answer);
-            while(!(answer.parent == null))
-            {
-                pathList.Add(answer.parent);
-                answer = answer.parent;
-            }
-            pathList.Reverse();
-
-            return pathList;
-        }
-
-        private static void WriteFile(ArrayList pathList, string name)
-        {
-            if((File.Exists(name + ".csn")))
-            {
-                File.Delete(name + ".csn");
-            }
-                Console.Write("\nPath: ");
-                foreach(Node item in pathList)
-                {
-                    Console.Write(item.id);
-                    Console.Write(" ");
-                    // write file path to a .csn file with the name of the arguments input
-                    File.AppendAllText(name + ".csn", item.id + " ");
-                }
-                Console.WriteLine("\n");
-        }
         private static int[] ReadFile(string name)
         {
             string file = null;
@@ -90,85 +59,23 @@ namespace _40400403
             return input;
         }
 
-        public static Node AStarAlgorithm(ArrayList nodeList, Matrix connection, int totalNodes)
+        private static void WriteFile(ArrayList pathList, string name)
         {
-            ArrayList openList = new ArrayList();
-            ArrayList closeList = new ArrayList();
-
-            Node startNode = (Node)nodeList[0];
-            Node goalNode = (Node)nodeList[totalNodes - 1];
-            Node currentNode = startNode;
-            Node parent = null;
-
-            int nodeNum = 0;
-            openList.Add(startNode);
-
-            while (!(openList == null))
+            if((File.Exists(name + ".csn")))
             {
-                if(openList.Count == 0)
-                {
-                    Console.WriteLine("fail");
-                    return null;
-                }
-                // sort open list by fscore
-                openList.Sort(new myComparer());
-
-                // set the node with the lowest fscore to the current node being exaimined
-                currentNode = (Node)openList[0];
-                nodeNum = currentNode.id - 1;
-
-                // when the current node id is equal to the id of the goal node, exit
-                if (currentNode.id == goalNode.id)
-                {
-                    //closeList.Add(currentNode);
-                    return (Node)openList[0];
-                }
-
-                // Detect connections new  nodes, add to open list
-                for (int i = 0; i < totalNodes; i++)
-                {
-                    if (connection.getEdge(nodeNum, i))
-                    {
-                        Node expandNode = (Node)nodeList[i];
-                        
-                        
-
-                        if(!(openList.Contains(expandNode) || closeList.Contains(expandNode)))
-                        {
-                            expandNode.parent = currentNode;
-                            openList.Add(expandNode);
-                        }
-                    }
-                }
-                
-                openList.Remove(currentNode);
-                closeList.Add(currentNode);
-
-                foreach(Node node in openList)
-                {
-                        parent = node.parent;
-
-                        node.distanceParent = node.Distance(parent);
-                        node.gScore = node.gScore + node.distanceParent;
-                        // Distance from node to goal node
-                        node.hScore = node.Distance(goalNode);
-                }
+                File.Delete(name + ".csn");
             }
 
-            return null;
-        }
-
-        public class myComparer : IComparer
-        {
-            int IComparer.Compare(object xx, object yy)
+            Console.Write("\nPath: ");
+            foreach(Node item in pathList)
             {
-                Node x = (Node)xx;
-                Node y = (Node)yy;
-
-                return x.fScore.CompareTo(y.fScore);
+                Console.Write(item.id);
+                Console.Write(" ");
+                // write file path to a .csn file with the name of the arguments input
+                File.AppendAllText(name + ".csn", item.id + " ");
             }
+            Console.WriteLine("\n");
         }
-
 
         public static ArrayList initNodeList(int[] input, int totalCoord)
         {
@@ -190,8 +97,97 @@ namespace _40400403
                 nodeID++;
                 idx = idx + 2;
             }
-
             return nodeList;
+        }
+
+        public static Node AStarAlgorithm(ArrayList nodeList, Matrix connection, int totalNodes)
+        {
+            ArrayList openList = new ArrayList();
+            ArrayList closeList = new ArrayList();
+
+            Node startNode = (Node)nodeList[0];
+            Node goalNode = (Node)nodeList[totalNodes - 1];
+            Node currentNode = startNode;
+            Node parent = null;
+
+            int nodeNum = 0;
+            openList.Add(startNode);
+
+            while (!(openList == null))
+            {
+                if(openList.Count == 0)
+                {
+                    Node noPath = new Node(0, -1, -1);
+                    return noPath;
+                }
+                // sort open list by fscore
+                openList.Sort(new nodeComparer());
+
+                // set the node with the lowest fscore to the current node being exaimined
+                currentNode = (Node)openList[0];
+                nodeNum = currentNode.id - 1;
+
+                // when the current node id is equal to the id of the goal node, exit
+                if (currentNode.id == goalNode.id)
+                {
+                    //closeList.Add(currentNode);
+                    return (Node)openList[0];
+                }
+
+                // Detect connections new  nodes, add to open list
+                for (int i = 0; i < totalNodes; i++)
+                {
+                    if (connection.getEdge(nodeNum, i))
+                    {
+                        Node expandNode = (Node)nodeList[i];
+                        
+                        if(!(openList.Contains(expandNode) || closeList.Contains(expandNode)))
+                        {
+                            expandNode.parent = currentNode;
+                            openList.Add(expandNode);
+                        }
+                    }
+                }               
+                openList.Remove(currentNode);
+                closeList.Add(currentNode);
+
+                foreach(Node node in openList)
+                {
+                        parent = node.parent;
+
+                        node.distanceParent = node.Distance(parent);
+                        node.gScore = node.gScore + node.distanceParent;
+                        // Distance from node to goal node
+                        node.hScore = node.Distance(goalNode);
+                }
+            }
+            return null;
+        }
+
+        private static ArrayList CalculatePath(Node answer)
+        {
+            ArrayList pathList = new ArrayList();
+
+            pathList.Add(answer);
+            while (!(answer.parent == null))
+            {
+                pathList.Add(answer.parent);
+                answer = answer.parent;
+            }
+            pathList.Reverse();
+
+            return pathList;
+        }
+
+        public class nodeComparer : IComparer
+        {
+            int IComparer.Compare(object firstNode, object secondNode)
+            {
+                Node first = (Node)firstNode;
+                Node second = (Node)secondNode;
+
+                return first.fScore.CompareTo(second.fScore);
+            }
         }
     }
 }
