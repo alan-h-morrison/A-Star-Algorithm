@@ -13,8 +13,19 @@ namespace _40400403
     {
         static void Main(string[] args)
         {
-            // Read file from the command prompt
-            string fileName = args[0];
+            string fileName = null;
+
+            try
+            {
+                // Read file from the command prompt
+                fileName = args[0];
+            }
+            catch
+            {
+                Console.WriteLine("Please enter the file name");
+                Environment.Exit(1);
+            }
+            
 
             // Parse the string array into int array
             int[] input = ReadFile(fileName);
@@ -22,16 +33,19 @@ namespace _40400403
             // total x and y coordianates in the file
             int totalNodes = input[0];
             int totalCoord = input[0] * 2;
-            int start = totalCoord + 1;
-            int end = input.Length;
+            int matrixStart = totalCoord + 1;
+            int matrixEnd = input.Length;
 
-            Matrix connect = new Matrix(totalNodes);
-            connect.LoadMatrix(connect, input, start, end, totalNodes);
+            Matrix matrix = new Matrix(totalNodes);
+            matrix.LoadMatrix(matrix, input, matrixStart, matrixEnd, totalNodes);
 
             ArrayList nodeList = initNodeList(input, totalCoord);
 
-            Node answer = AStarAlgorithm(nodeList, connect, totalNodes);
+            Node answer = AStarAlgorithm(nodeList, matrix, totalNodes);
             ArrayList answerPath = CalculatePath(answer);
+
+            //Console.WriteLine("\nNumber of caves: " + answerPath.Count);
+            //Console.WriteLine("Length: " + Math.Round(answer.gScore, 2));
 
             WriteFile(answerPath, fileName);
         }
@@ -61,20 +75,20 @@ namespace _40400403
 
         private static void WriteFile(ArrayList pathList, string name)
         {
-            if((File.Exists(name + ".csn")))
+            if ((File.Exists(name + ".csn")))
             {
                 File.Delete(name + ".csn");
             }
 
-            Console.Write("\nPath: ");
-            foreach(Node item in pathList)
+            //Console.Write("\nPath: ");
+            foreach (Node item in pathList)
             {
-                Console.Write(item.id);
-                Console.Write(" ");
+                // Console.Write(item.id);
+                // Console.Write(" ");
                 // write file path to a .csn file with the name of the arguments input
                 File.AppendAllText(name + ".csn", item.id + " ");
             }
-            Console.WriteLine("\n");
+            //Console.WriteLine("\n");
         }
 
         public static ArrayList initNodeList(int[] input, int totalCoord)
@@ -100,7 +114,7 @@ namespace _40400403
             return nodeList;
         }
 
-        public static Node AStarAlgorithm(ArrayList nodeList, Matrix connection, int totalNodes)
+        public static Node AStarAlgorithm(ArrayList nodeList, Matrix matrix, int totalNodes)
         {
             ArrayList openList = new ArrayList();
             ArrayList closeList = new ArrayList();
@@ -108,24 +122,16 @@ namespace _40400403
             Node startNode = (Node)nodeList[0];
             Node goalNode = (Node)nodeList[totalNodes - 1];
             Node currentNode = startNode;
-            Node parent = null;
 
-            int nodeNum = 0;
             openList.Add(startNode);
 
             while (!(openList == null))
             {
-                if(openList.Count == 0)
-                {
-                    Node noPath = new Node(0, -1, -1);
-                    return noPath;
-                }
-                // sort open list by fscore
-                openList.Sort(new nodeComparer());
+                 // sort open list by fscore
+                openList.Sort(new NodeComparer());
 
                 // set the node with the lowest fscore to the current node being exaimined
                 currentNode = (Node)openList[0];
-                nodeNum = currentNode.id - 1;
 
                 // when the current node id is equal to the id of the goal node, exit
                 if (currentNode.id == goalNode.id)
@@ -134,31 +140,36 @@ namespace _40400403
                     return (Node)openList[0];
                 }
 
-                // Detect connections new  nodes, add to open list
-                for (int i = 0; i < totalNodes; i++)
-                {
-                    if (connection.getEdge(nodeNum, i))
-                    {
-                        Node expandNode = (Node)nodeList[i];
-                        
-                        if(!(openList.Contains(expandNode) || closeList.Contains(expandNode)))
-                        {
-                            expandNode.parent = currentNode;
-                            openList.Add(expandNode);
-                        }
-                    }
-                }               
                 openList.Remove(currentNode);
                 closeList.Add(currentNode);
 
-                foreach(Node node in openList)
+                // Detect new connection nodes, add to open list
+                for (int i = 0; i < totalNodes; i++)
                 {
-                        parent = node.parent;
+                    if (matrix.getEdge(currentNode.id - 1, i))
+                    {
+                        Node expandNode = (Node)nodeList[i];
+                        Node parent = currentNode.parent;
 
-                        node.distanceParent = node.Distance(parent);
-                        node.gScore = node.gScore + node.distanceParent;
-                        // Distance from node to goal node
-                        node.hScore = node.Distance(goalNode);
+                        if (!(openList.Contains(expandNode) || closeList.Contains(expandNode)))
+                        {
+                            expandNode.parent = currentNode;
+                            expandNode.gScore = currentNode.gScore + expandNode.Distance(currentNode);
+
+                            // Distance from node to goal node
+                            expandNode.hScore = expandNode.Distance(goalNode);
+
+                           // Console.WriteLine(currentNode.id + " " + expandNode.id + "      |     " + expandNode.fScore);
+
+                            openList.Add(expandNode); 
+                        }
+                    }
+                }
+                
+                if (openList.Count == 0)
+                {
+                    Node noPath = new Node(0, -1, -1);
+                    return noPath;
                 }
             }
             return null;
@@ -177,17 +188,6 @@ namespace _40400403
             pathList.Reverse();
 
             return pathList;
-        }
-
-        public class nodeComparer : IComparer
-        {
-            int IComparer.Compare(object firstNode, object secondNode)
-            {
-                Node first = (Node)firstNode;
-                Node second = (Node)secondNode;
-
-                return first.fScore.CompareTo(second.fScore);
-            }
         }
     }
 }

@@ -9,19 +9,18 @@ namespace _40400403
         Boolean[][] matrix;
         private int arraySize;
 
-
         public Matrix(int size)
         {
             this.arraySize = size;
             matrix = new Boolean[size][];
 
-            for (int rows = 0; rows < size; rows++)
+            for (int i = 0; i < size; i++)
             {
-                matrix[rows] = new Boolean[size];
+                matrix[i] = new Boolean[size];
             }
         }
 
-        public Matrix LoadMatrix(Matrix empty, int[] input, int start, int end, int totalNodes)
+        public Matrix LoadMatrix(Matrix matrix, int[] input, int start, int end, int totalNodes)
         {
             int column = 0;
             int row = 0;
@@ -32,26 +31,27 @@ namespace _40400403
                 {
                     break;
                 }
+
                 if (row == totalNodes)
                 {                    
                     row = 0;
                     column++;
                 }
 
-                if (input[start] != 0)
+                if (input[start] == 0)
                 {
-                    empty.removeEdge(row, column);
+                    matrix.removeEdge(row, column);
                 }
 
                 if (input[start] == 1)
                 {
-                    empty.addEdge(row, column);                 
+                    matrix.addEdge(row, column);                 
                 }
 
                 row++;
                 start++;
             }
-            return empty;
+            return matrix;
         }
 
         // Add edges
@@ -73,22 +73,3 @@ namespace _40400403
         
     }
 }
-
-
-// Print the matrix
-/*
-public String toString()
-{
-    StringBuilder s = new StringBuilder();
-    for (int i = 0; i < numVertices; i++)
-    {
-        s.append(i + ": ");
-        for (boolean j : matrix[i])
-        {
-            s.append((j ? 1 : 0) + " ");
-        }
-        s.append("\n");
-    }
-    return s.toString();
-}
-*/
