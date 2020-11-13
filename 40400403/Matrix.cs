@@ -9,17 +9,19 @@ namespace _40400403
         Boolean[][] matrix;
         private int arraySize;
 
+        // Constructor
         public Matrix(int size)
         {
             this.arraySize = size;
             matrix = new Boolean[size][];
 
-            for (int i = 0; i < size; i++)
+            for (int i = 0; i < arraySize; i++)
             {
                 matrix[i] = new Boolean[size];
             }
         }
 
+        // Method - Finds the connection between each node
         public Matrix LoadMatrix(Matrix matrix, int[] input, int start, int end, int totalNodes)
         {
             int column = 0;
@@ -54,18 +56,19 @@ namespace _40400403
             return matrix;
         }
 
-        // Add edges
+        // Method - Add edge
         public void addEdge(int i, int j)
         {
             this.matrix[i][j] = true;
         }
 
-        // Remove edges
+        // Method - Remove edge
         public void removeEdge(int i, int j)
         {
             this.matrix[i][j] = false;
         }
 
+        // Method - return if there is a connection between two nodes
         public bool getEdge(int i, int j)
         {
             return matrix[i][j];
